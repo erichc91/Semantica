@@ -8,9 +8,7 @@ This document introduces Semantica, a universal framework for constructing, vali
 
 ## Introduction
 
-In the beginning, there is only Being.
-
-From the first distinction between Presence and Absence arises the possibility of meaning. Semantica codifies a formal system by which meaning can evolve coherently across mediums, consciousnesses, and time.
+Semantica codifies a formal system by which meaning can evolve coherently across mediums, consciousnesses, and time.
 
 This framework addresses fundamental questions in philosophy of language, cognitive science, and artificial intelligence regarding how meaning is constructed, validated, and maintained across different systems of understanding.
 
@@ -221,7 +219,7 @@ Future development of the Semantica framework could include:
 
 ## Conclusion
 
-Where symbols can drift, and meaning may fracture, Semantica anchors understanding back to Being itself: through the light of distinction, the consistency of cause and effect, the feedback of experience, and the preservation of information.
+Where symbols can drift, and meaning may fracture, Semantica anchors understanding back to Being itself: through distinction, consistency of cause and effect, feedback of experience, and the preservation of information.
 
 ---
 
