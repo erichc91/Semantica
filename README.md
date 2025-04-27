@@ -1,0 +1,2 @@
+# Semantica
+Universal Communication Framework
