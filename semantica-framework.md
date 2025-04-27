@@ -219,7 +219,7 @@ Future development of the Semantica framework could include:
 
 ## Conclusion
 
-Where symbols can drift, and meaning may fracture, Semantica anchors understanding back to Being itself: through the light of distinction, the consistency of cause and effect, the feedback of experience, and the preservation of information.
+Where symbols can drift, and meaning may fracture, Semantica anchors understanding back to Being itself: through distinction, consistency of cause and effect, feedback of experience, and the preservation of information.
 
 ---
 
