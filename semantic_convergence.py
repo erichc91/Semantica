@@ -1,5 +1,4 @@
-# Full RSC Semantic Convergence Experiment
-# Built for Agent A ↔ B Learning Validation
+# Full RSC Semantic Convergence + Syntax Emergence Experiment
 # Author: Erich Curtis
 # Date: 2025-04-28
 
@@ -7,129 +6,173 @@ import random
 import networkx as nx
 import matplotlib.pyplot as plt
 import numpy as np
+from tqdm import tqdm
 
-# ------------------- 1. Vocabulary and Semantic Field Setup -------------------
+# ------------------- 1. Vocabulary and Expanded Relations -------------------
 
 semantic_fields = {
-    "Living Things": ['dog', 'cat', 'bird', 'fish', 'whale', 'wolf', 'tiger', 'horse', 'rabbit', 'bear'],
-    "Transportation": ['car', 'truck', 'bicycle', 'airplane', 'train', 'boat', 'ship', 'bridge', 'tunnel', 'road'],
-    "Natural Features": ['river', 'mountain', 'forest', 'desert', 'beach', 'lake', 'island', 'valley', 'waterfall', 'canyon'],
-    "Human Structures": ['house', 'castle', 'hut', 'skyscraper', 'tent', 'apartment', 'building', 'school', 'hospital', 'station'],
-    "Communication Devices": ['phone', 'radio', 'television', 'computer', 'internet', 'camera', 'microphone', 'speaker', 'satellite', 'signal'],
-    "Weather and Sky": ['rain', 'snow', 'storm', 'cloud', 'sun', 'moon', 'star', 'wind', 'hurricane', 'tornado'],
-    "Objects and Tools": ['chair', 'table', 'bed', 'lamp', 'pen', 'pencil', 'hammer', 'screwdriver', 'rope', 'backpack']
+    "Living Things": ['dog', 'cat', 'horse', 'bird', 'fish', 'teacher', 'parent', 'child', 'friend', 'enemy'],
+    "Actions": ['run', 'walk', 'swim', 'teach', 'learn', 'jump', 'help', 'hurt', 'love', 'eat'],
+    "Objects": ['chair', 'table', 'cup', 'pen', 'phone', 'backpack', 'house', 'bridge', 'road', 'tree'],
+    "Locations": ['forest', 'mountain', 'river', 'valley', 'school', 'city', 'field', 'beach', 'island'],
+    "Quantities": ['one', 'two', 'few', 'many', 'all', 'none', 'some'],
+    "Modifiers": ['big', 'small', 'fast', 'slow', 'loud', 'quiet', 'happy', 'sad'],
+    "Prepositions": ['across', 'under', 'over', 'through', 'beside', 'near', 'around'],
+    "Scientific": ['earth', 'sun', 'water', 'ice', 'orbit', 'gravity', 'star', 'cloud'],
+    "Social": ['neighbor', 'stranger', 'friend', 'parent', 'enemy'],
+    "Emotions": ['happy', 'sad', 'angry', 'tired', 'calm', 'excited', 'afraid', 'safe'],
+    "Conditions": ['if', 'when', 'because', 'although', 'unless']
 }
 
-# Mix some fields (e.g., river belongs to both Natural Features and Transportation)
-field_overlaps = {
-    'river': ['Natural Features', 'Transportation'],
-    'mountain': ['Natural Features', 'Weather and Sky'],
-    'phone': ['Communication Devices', 'Objects and Tools'],
-    'house': ['Human Structures', 'Objects and Tools'],
-}
+# Flat vocabulary
+vocab = list(set([item for sublist in semantic_fields.values() for item in sublist]))
 
-# Create master vocabulary
-vocab = []
-for field, words in semantic_fields.items():
-    vocab.extend(words)
-vocab = list(set(vocab))  # Remove any duplicates
+# Relations - Simple, Medium, Complex, Conditional
+relations = [
+    ('dog', 'is', 'mammal'),
+    ('car', 'moves_on', 'road'),
+    ('bird', 'flies_over', 'river'),
+    ('teacher', 'teaches', 'child'),
+    ('rain', 'causes', 'wet_ground'),
+    ('river', 'flows_into', 'lake'),
+    ('phone', 'connects_to', 'internet'),
+    ('earth', 'orbits', 'sun'),
+    ('sun', 'provides', 'light'),
+    ('friend', 'helps', 'friend'),
+    ('child', 'plays_with', 'dog'),
+    ('parent', 'loves', 'child'),
+    ('earth', 'has', 'gravity'),
+    ('water', 'freezes_at', '0C'),
+    ('mountain', 'stands_over', 'valley'),
+    ('wind', 'moves', 'clouds'),
+    ('child', 'crosses', 'bridge', 'during rain'),
+    ('friend', 'helps', 'friend', 'because of danger'),
+    ('sun', 'rises', 'over mountain', 'at morning'),
+    ('hunger', 'leads_to', 'eating'),
+    ('fish', 'cannot', 'walk'),
+    ('if rain', 'then', 'ground becomes wet')
+]
 
 # ------------------- 2. Agent Initialization -------------------
 
 random.seed(42)
 
-# Agent A: baseline mappings (symbol to symbol)
 agent_a_groundings = {word: word for word in vocab}
 
-# Agent B: slightly noisy starting mappings
 agent_b_groundings = {}
 for word in vocab:
     if random.random() < 0.8:
-        agent_b_groundings[word] = word  # 80% correct
+        agent_b_groundings[word] = word
     else:
-        agent_b_groundings[word] = random.choice(vocab)  # 20% wrong guess
+        agent_b_groundings[word] = random.choice(vocab)
 
-# ------------------- 3. Learning and Negotiation Phase -------------------
+agent_c_groundings = {}
+for word in vocab:
+    if random.random() < 0.3:
+        agent_c_groundings[word] = word
+    else:
+        agent_c_groundings[word] = random.choice(vocab)
 
-# Parameters
-total_frames = 200
-batch_size = 5  # Number of proposals per frame
+# ------------------- 3. Learning Phase with RSC Stability -------------------
 
-# Tracking
-proposals_log = []
-accepted_relations = set()
-accuracy_over_time = []
+total_frames = 1500
+batch_size = 3
 
-# Helper: simple relational consistency check
-def validate_relation(w1, w2):
-    """Accept relation if words belong to compatible semantic fields."""
-    fields_w1 = [field for field, words in semantic_fields.items() if w1 in words]
-    fields_w2 = [field for field, words in semantic_fields.items() if w2 in words]
-    # Check for field overlap
-    return bool(set(fields_w1) & set(fields_w2))
+proposals_log_ab = []
+proposals_log_ac = []
+anchor_log_ab = []
+anchor_log_ac = []
+accepted_relations_ab = set()
+accepted_relations_ac = set()
+stability_counter_ab = {}
+stability_counter_ac = {}
+anchors_ab = set()
+anchors_ac = set()
+accuracy_over_time_ab = []
+accuracy_over_time_ac = []
+
+stability_threshold = 3  # Validations needed to anchor
+
+# Use the ground truth list to validate
+ground_truth_set = set(relations)
+
+def validate_relation(*args):
+    return args in ground_truth_set
+
+
+def try_validate(groundings, *words):
+    mapped = [groundings[w] if w in groundings else w for w in words]
+    return validate_relation(*mapped)
 
 # Learning Loop
-for frame in range(total_frames):
-    proposals = random.sample(vocab, batch_size)
-    accepted = 0
-    for w1 in proposals:
-        guess_w2 = agent_b_groundings[w1]
-        if validate_relation(w1, guess_w2):
-            accepted_relations.add((w1, guess_w2))
-            accepted += 1
-            proposals_log.append(f"Frame {frame}: PROPOSED ({w1} ↔ {guess_w2}) → ACCEPTED")
+for frame in tqdm(range(total_frames), desc="Learning Progress", unit="frame"):
+    proposals = random.sample(relations, batch_size)
+    
+    accepted_ab = 0
+    accepted_ac = 0
+    
+    for proposal in proposals:
+        # Agent B Validation
+        if try_validate(agent_b_groundings, *proposal):
+            accepted_relations_ab.add(proposal)
+            stability_counter_ab[proposal] = stability_counter_ab.get(proposal, 0) + 1
+            accepted_ab += 1
+            proposals_log_ab.append(f"Frame {frame}: {proposal} → ACCEPTED (A↔B)")
+            if stability_counter_ab[proposal] == stability_threshold:
+                anchors_ab.update(proposal)
+                anchor_log_ab.append(f"Frame {frame}: ANCHORED {proposal}")
         else:
-            proposals_log.append(f"Frame {frame}: PROPOSED ({w1} ↔ {guess_w2}) → REJECTED")
-    accuracy = accepted / batch_size
-    accuracy_over_time.append(accuracy)
+            proposals_log_ab.append(f"Frame {frame}: {proposal} → REJECTED (A↔B)")
+        
+        # Agent C Validation
+        if try_validate(agent_c_groundings, *proposal):
+            accepted_relations_ac.add(proposal)
+            stability_counter_ac[proposal] = stability_counter_ac.get(proposal, 0) + 1
+            accepted_ac += 1
+            proposals_log_ac.append(f"Frame {frame}: {proposal} → ACCEPTED (A↔C)")
+            if stability_counter_ac[proposal] == stability_threshold:
+                anchors_ac.update(proposal)
+                anchor_log_ac.append(f"Frame {frame}: ANCHORED {proposal}")
+        else:
+            proposals_log_ac.append(f"Frame {frame}: {proposal} → REJECTED (A↔C)")
+    
+    accuracy_over_time_ab.append(accepted_ab / batch_size)
+    accuracy_over_time_ac.append(accepted_ac / batch_size)
+    
+    # Drift
+    if frame % 25 == 0 and frame != 0:
+        for word in random.sample(list(agent_c_groundings.keys()), 5):
+            agent_c_groundings[word] = random.choice(vocab)
 
-# ------------------- 4. Save Negotiation Log -------------------
+# ------------------- 4. Save Logs -------------------
 
-with open('negotiation_log.txt', 'w') as log_file:
-    for line in proposals_log:
-        log_file.write(line + '\n')
+with open('negotiation_log_ab.txt', 'w', encoding='utf-8') as f:
+    for line in proposals_log_ab:
+        f.write(line + '\n')
 
-print("Negotiation log saved to 'negotiation_log.txt'.")
+with open('negotiation_log_ac.txt', 'w', encoding='utf-8') as f:
+    for line in proposals_log_ac:
+        f.write(line + '\n')
 
-# ------------------- 5. Final Graph Construction -------------------
+with open('anchor_log_ab.txt', 'w', encoding='utf-8') as f:
+    for line in anchor_log_ab:
+        f.write(line + '\n')
 
-# Build Graph
-G = nx.Graph()
-for w1, w2 in accepted_relations:
-    G.add_edge(w1, w2)
+with open('anchor_log_ac.txt', 'w', encoding='utf-8') as f:
+    for line in anchor_log_ac:
+        f.write(line + '\n')
 
-# Layout
-pos = nx.spring_layout(G, seed=42)
+print("All logs saved.")
 
-# Color Edges Based on Validation Order
-num_edges = len(G.edges())
-colors = plt.cm.viridis(np.linspace(0, 1, num_edges))
-
-# Draw Final Semantic Graph
-plt.figure(figsize=(20, 14))
-nx.draw_networkx_nodes(G, pos, node_color='lightblue', node_size=800)
-nx.draw_networkx_labels(G, pos, font_size=8)
-
-# Sort edges by order for color mapping
-edges = list(G.edges())
-for idx, edge in enumerate(edges):
-    nx.draw_networkx_edges(G, pos, edgelist=[edge], edge_color=[colors[idx]], width=2)
-
-plt.title("Final Structured Semantic Field Graph: Agent A ↔ B", fontsize=18)
-plt.axis('off')
-plt.tight_layout()
-plt.show()
-
-# ------------------- 6. Accuracy Over Time Plot -------------------
-
-# Cumulative average accuracy over time
-cumulative_accuracy = [sum(accuracy_over_time[:i+1])/(i+1) for i in range(len(accuracy_over_time))]
+# ------------------- 5. Plot Accuracy -------------------
 
 plt.figure(figsize=(12, 6))
-plt.plot(range(total_frames), cumulative_accuracy, color='green', linewidth=2)
+plt.plot(range(total_frames), [sum(accuracy_over_time_ab[:i+1])/(i+1) for i in range(total_frames)], label='Agent A ↔ B', color='green', linewidth=2)
+plt.plot(range(total_frames), [sum(accuracy_over_time_ac[:i+1])/(i+1) for i in range(total_frames)], label='Agent A ↔ C', color='red', linewidth=2)
 plt.xlabel('Learning Frame', fontsize=14)
 plt.ylabel('Cumulative Accuracy', fontsize=14)
-plt.title('Accuracy Over Time: Structured Relational Learning', fontsize=16)
+plt.title('Accuracy Over Time: Agent A ↔ B vs Agent A ↔ C (with RSC Stability)', fontsize=16)
+plt.legend()
 plt.grid(True)
 plt.ylim(0, 1)
 plt.tight_layout()
