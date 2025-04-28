@@ -1,6 +1,32 @@
 # Relational Semantic Convergence
 ## A New Theory of Meaning
 
+© 2025 Erich Curtis. All Rights Reserved.
+
+---
+
+## MIT License
+
+Copyright (c) 2025 Erich Curtis
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this theory and associated documentation files (the "Theory"), to deal
+in the Theory without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Theory, and to permit persons to whom the Theory is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Theory.
+
+THE THEORY IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE THEORY OR THE USE OR OTHER DEALINGS IN THE
+THEORY.
+
 ---
 
 ## The Problem
@@ -137,3 +163,13 @@ What implications does this have for AI understanding?
 ## Thank You
 
 Relational Semantic Convergence: A structural approach to meaning
+
+---
+
+## Authorship and Citation
+
+Please cite this work as:
+
+Curtis, E. (2025). Relational Semantic Convergence: A structural approach to meaning.
+
+Contact: erichcurtis0@gmail.com
