@@ -1,0 +1,24 @@
+('her cat', 'sleep', 'house'): 316
+('his dog', 'run', 'field'): 320
+('parent', 'comfort', 'child'): 282
+('bird', 'fly', 'sky'): 297
+('she', 'believe', 'truth'): 305
+('dog', 'run', 'field'): 284
+('engineer', 'design', 'house'): 267
+('our team', 'win', 'game'): 288
+('family', 'love', 'child'): 310
+('my friend', 'comfort', 'child'): 307
+('fire', 'burn', 'forest'): 305
+('its engine', 'run', 'car'): 278
+('their family', 'visit', 'city'): 287
+('scientist', 'study', 'gravity'): 315
+('earthquake', 'destroy', 'city'): 284
+('engineer', 'build', 'bridge'): 291
+('they', 'live', 'city'): 300
+('river', 'flow', 'valley'): 314
+('we', 'build', 'house'): 271
+('your parent', 'love', 'child'): 297
+('family', 'live', 'house'): 285
+('you', 'help', 'your friend'): 283
+('teacher', 'teach', 'student'): 274
+('fish', 'swim', 'water'): 273

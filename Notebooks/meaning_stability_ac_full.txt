@@ -1,0 +1,4 @@
+('her cat', 'sleep', 'house'): 23
+('she', 'believe', 'truth'): 23
+('our team', 'win', 'game'): 288
+('you', 'help', 'your friend'): 7

@@ -1,0 +1,4 @@
+('dog', 'run', 'field'): 586
+('parent', 'comfort', 'child'): 625
+('earthquake', 'destroy', 'city'): 573
+('teacher', 'teach', 'student'): 615
