@@ -84,6 +84,16 @@ class ConceptNetProcessor:
         except:
             return 1.0
     
+    def save_preprocessed_data(self, english_file='english_conceptnet_preprocessed.csv', german_file='german_conceptnet_preprocessed.csv'):
+        """Save preprocessed ConceptNet data to CSV files"""
+        if self.english_data is not None:
+            self.english_data.to_csv(english_file, index=False)
+            print(f"Saved English data to {english_file}")
+        
+        if self.german_data is not None:
+            self.german_data.to_csv(german_file, index=False)
+        print(f"Saved German data to {german_file}")
+    
     def build_semantic_graph(self, max_concepts=200, min_weight=1.0, sample_size=0.25):
         """Build semantic graph from ConceptNet data"""
         print("Building semantic graph from ConceptNet data...")
@@ -319,6 +329,16 @@ class ConceptNetProcessor_v2:
         self.relation_types = set()
         
         print("ConceptNetProcessor initialized")
+    
+    def save_preprocessed_data(self, english_file='english_conceptnet_preprocessed.csv', german_file='german_conceptnet_preprocessed.csv'):
+        """Save preprocessed ConceptNet data to CSV files"""
+        if self.english_data is not None:
+            self.english_data.to_csv(english_file, index=False)
+            print(f"Saved English data to {english_file}")
+        
+        if self.german_data is not None:
+            self.german_data.to_csv(german_file, index=False)
+        print(f"Saved German data to {german_file}")
     
     def clean_concept_name(self, concept_str):
         """Extract clean concept name from ConceptNet format"""
